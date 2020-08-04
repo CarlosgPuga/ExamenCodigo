@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio Sesion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form name="inicio" onSubmit="return formValidation();" action="menu.html">
+        <label>Correo:</label>
+        <input type="text" placeholder="Introduce Correo" name="correo" id="correo">
+        <label>Password:</label>
+        <input type="password" placeholder="Introduce password" name="password" id="password">
+        <input type="submit" class="button" value="Inicio Sesion">
+        <hr\>
+        <label id="descr"></label>
+    </form>
+
+<script>
+    document.querySelectorAll('input').forEach((input) => {
+        input.addEventListener('blur', function() {
+            this.classList.toggle('noerror', this.value.length > 0);
+        });
+    });
+    document.querySelectorAll('input').forEach((input) => {
+        input.addEventListener('blur', function() {
+            this.classList.toggle('error', this.value.length == 0);
+        });
+    });
+
+    function formValidation() {
+
+        if (valid_field("correo") || valid_field("password") ){
+            return false;
+        }
+        if( valid_session()){
+            document.getElementById("descr").innerHTML="Los valores introducidos no coinciden con los registrados en el sistema";
+            return false;
+        }
+    return( true );
+    }
+    function valid_field(field) {
+        if (document.inicio[field].value.length == 0){
+            document.inicio[field].style.borderColor="red";
+            return true;
+        }else{
+            document.inicio[field].style.borderColor="black";
+            return false;
+        }
+    }
+
+    function get_record(name)  {
+        return localStorage.getItem(name);
+    }
+
+    function valid_session()  {
+        var pass=get_record(document.inicio.correo.value);
+        if (pass != document.inicio.password.value){
+            return true;
+        }
+    }
+
+</script>
+</body>
+</html>

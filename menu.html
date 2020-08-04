@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form name="mod" onSubmit="return modificar();">
+        <label>Configuraci&oacute;n de cuenta:</label>
+        <br/>
+        <label>Nombre:</label>
+        <input type="text" placeholder="Introduce Nombre" name="nombre" id="nombre" >
+        <label>RFC:</label>
+        <input type="text" placeholder="Introduce RFC" name="rfc" id="rfc">
+        <label>Direccion:</label>
+        <input type="text" placeholder="Introduce Direccion" name="direccion" id="direccion">
+        <label>Telefono:</label>
+        <input type="text" placeholder="Introduce Telefono" name="telefono" id="telefono">
+        <label>WebSite:</label>
+        <input type="text" placeholder="Introduce WebSite" name="website" id="website">
+        <label>Cambiar password:</label>
+        <input type="password" placeholder="Introduce password" name="password" id="password">
+        <input type="submit" class="button" value="Modificar">
+        <label id="descr"></label>
+    </form>
+    <div name="algoritmos">
+        <label>Algoritmos:</label>
+        <input type="text" placeholder="Introduce las Palabras a validar" name="palabras" id="palabras" >
+        <button onclick="algoritmo()" class="button">Validar</button>
+        <ol id="renglon"></ol>
+    </div>
+
+<script>
+    function modificar() {
+        if (valid_field("nombre") || valid_field("rfc") || valid_field("direccion")  || valid_field("telefono") || valid_field("website") || valid_field("password")){
+            return false;
+        }
+        var exprfc=/^(([ÑA-Z|ña-z|&]{3}|[A-Z|a-z]{4})\d{2}((0[1-9]|1[012])(0[1-9]|1\d|2[0-8])|(0[13456789]|1[012])(29|30)|(0[13578]|1[02])31)(\w{2})([A|a|0-9]{1}))$|^(([ÑA-Z|ña-z|&]{3}|[A-Z|a-z]{4})([02468][048]|[13579][26])0229)(\w{2})([A|a|0-9]{1})$/;
+        if( greather_than( "rfc",13) || !exprfc.test(document.getElementById("rfc").value)){
+            document.getElementById("descr").innerHTML="No es un RFC valido";
+            return false;
+        }
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const login = urlParams.get('correo')
+        save_record(login,document.mod.password.value);
+        return true;
+    }
+    function algoritmo() {
+        if (valid_field("palabras")){
+            return false;
+        }
+        var r=document.getElementById('renglon');
+        var x=document.getElementById('palabras').value.match(/[a-z'\-]+/gi);
+        for(var i=0;i<x.length;i++)
+        {
+            var li=document.createElement('li');
+            li.innerText=x[i]+" "+validaPalindroma(x[i]);
+            r.appendChild(li);  
+        }
+        return true;
+    }
+    function validaPalindroma(str) {
+        if( str == str.split("").reverse().join("") ){
+            return ",Si es palindroma";
+        }else{
+            return ",No es palindroma";
+        }
+    }
+    function valid_field(field) {
+        if (document.getElementById(field).value.length == 0){
+            document.getElementById(field).style.borderColor="red";
+            return true;
+        }else{
+            document.getElementById(field).style.borderColor="black";
+            return false;
+        }
+    }
+    function greather_than(field, value) {
+        document.getElementById(field) > value;
+    }
+    function save_record(name, value) {
+        return localStorage.setItem(name, value);
+    }
+    function get_record(name)  {
+        return localStorage.getItem(name);
+    }
+</script>
+</body>
+</html>

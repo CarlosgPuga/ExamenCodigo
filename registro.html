@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form name="registro" onSubmit="return formValidation();">
+        <label>Nombre:</label>
+        <input type="text" placeholder="Introduce Nombre" name="nombre" id="nombre" >
+        <label>Correo:</label>
+        <input type="text" placeholder="Introduce Correo" name="correo" id="correo">
+        <label>RFC:</label>
+        <input type="text" placeholder="Introduce RFC" name="rfc" id="rfc">
+        <label>Password:</label>
+        <input type="password" placeholder="Introduce password" name="password" id="password">
+        <label>Confirmaci&oacute;n Password:</label>
+        <input type="password" placeholder="Confirma password" name="confpassword" id="confpassword">
+        <input type="submit" class="button" value="Registrar">
+        <hr\>
+        <label id="descr"></label>
+    </form>
+
+<script>
+    document.querySelectorAll('input').forEach((input) => {
+        input.addEventListener('blur', function() {
+            this.classList.toggle('noerror', this.value.length > 0);
+        });
+    });
+    document.querySelectorAll('input').forEach((input) => {
+        input.addEventListener('blur', function() {
+            this.classList.toggle('error', this.value.length == 0);
+        });
+    });
+
+    function formValidation() {
+
+        if (valid_field("nombre") || valid_field("correo") || valid_field("rfc") || valid_field("password") || valid_field("confpassword")){
+            return false;
+        }
+        var exprfc=/^(([ÑA-Z|ña-z|&]{3}|[A-Z|a-z]{4})\d{2}((0[1-9]|1[012])(0[1-9]|1\d|2[0-8])|(0[13456789]|1[012])(29|30)|(0[13578]|1[02])31)(\w{2})([A|a|0-9]{1}))$|^(([ÑA-Z|ña-z|&]{3}|[A-Z|a-z]{4})([02468][048]|[13579][26])0229)(\w{2})([A|a|0-9]{1})$/;
+        if( greather_than( "rfc",13) || !exprfc.test(document.registro.rfc.value)){
+            document.getElementById("descr").innerHTML="No es un RFC valido";
+            return false;
+        }
+        if( valid_rfc()){
+            document.getElementById("descr").innerHTML="RFC ya existente";
+            return false;
+        }
+        if (document.registro.password.value != document.registro.confpassword.value){
+            document.getElementById("password").style.borderColor="red";
+            document.getElementById("confpassword").style.borderColor="red";
+            document.getElementById("descr").innerHTML="Los passwords son diferentes";
+            return false;
+        }
+    save_record("RFC",document.registro.rfc.value);
+    save_record(document.registro.correo.value,document.registro.password.value);
+    return( true );
+    }
+    function valid_field(field) {
+        if (document.registro[field].value.length == 0){
+            document.registro[field].style.borderColor="red";
+            return true;
+        }else{
+            document.registro[field].style.borderColor="black";
+            return false;
+        }
+    }
+
+    function greather_than(field, value) {
+        document.registro[field] > value;
+    }
+
+    function save_record(name, value) {
+        return localStorage.setItem(name, value);
+    }
+
+    function get_record(name)  {
+        return localStorage.getItem(name);
+    }
+
+    function valid_rfc()  {
+        var valor=get_record("RFC");
+        if ( 'null' == valor){
+            return false;
+        }
+        if (valor == document.registro.rfc.value ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+</script>
+</body>
+</html>
